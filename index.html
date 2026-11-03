@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pancasila Level Up — Grade 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Baloo+2:wght@600;700;800&family=Source+Serif+4:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-1: #1a0b3e;
+  --bg-2: #2d1b69;
+  --bg-3: #4c1d95;
+  --gold: #fbbf24;
+  --gold-bright: #fde047;
+  --gold-glow: rgba(251, 191, 36, 0.5);
+  --purple: #a855f7;
+  --pink: #ec4899;
+  --green: #22c55e;
+  --red: #ef4444;
+  --blue: #3b82f6;
+  --text: #fff;
+  --muted: #c4b5fd;
+}
+
+body {
+  font-family: 'Fredoka', system-ui, sans-serif;
+  background: radial-gradient(ellipse at center top, var(--bg-3) 0%, var(--bg-2) 50%, var(--bg-1) 100%);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 16px;
+  overflow-x: hidden;
+}
+
+.screen { display: none; width: 100%; max-width: 1200px; margin: 0 auto; }
+.screen.active { display: block; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 26px; border: none; border-radius: 16px;
+  font-family: inherit; font-size: 16px; font-weight: 700; cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn:active:not(:disabled) { transform: scale(0.97); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold), #f59e0b);
+  color: #4c1d95;
+  box-shadow: 0 6px 20px var(--gold-glow);
+}
+.btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 30px var(--gold-glow); }
+.btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 2px solid rgba(255,255,255,0.2); }
+.btn-secondary:hover:not(:disabled) { background: rgba(255,255,255,0.15); }
+.btn-ghost { background: transparent; color: var(--muted); border: none; font-size: 14px; padding: 8px 14px; }
+.btn-ghost:hover { color: var(--gold); }
+
+/* ============ SETUP ============ */
+#setupScreen { display: none; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+#setupScreen.active { display: flex; }
+.setup-card {
+  width: 100%; max-width: 640px;
+  background: rgba(30, 15, 70, 0.9);
+  border: 3px solid var(--gold);
+  border-radius: 28px;
+  padding: 44px 36px;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 80px rgba(251,191,36,0.2);
+  position: relative; overflow: hidden;
+}
+.setup-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+  background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
+}
+.setup-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(251,191,36,0.15); color: var(--gold);
+  padding: 8px 18px; border-radius: 999px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+  border: 2px solid rgba(251,191,36,0.4);
+  margin-bottom: 20px;
+}
+.setup-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: clamp(36px, 6vw, 56px);
+  font-weight: 800; line-height: 1;
+  background: linear-gradient(135deg, #fff, var(--gold-bright));
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+  text-shadow: 0 4px 20px rgba(251,191,36,0.3);
+}
+.setup-sub { color: var(--muted); font-size: 15px; margin-bottom: 6px; font-weight: 500; }
+.setup-info { color: var(--muted); font-size: 13px; margin-bottom: 24px; opacity: 0.7; }
+.rank-preview { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+.rank-preview span {
+  font-size: 11px; font-weight: 700;
+  padding: 4px 10px; border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  color: var(--muted);
+}
+.field { text-align: left; margin-bottom: 16px; }
+.field-label {
+  display: block; font-size: 12px; font-weight: 700;
+  color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.field-input {
+  width: 100%; padding: 14px 18px;
+  background: rgba(10,5,30,0.8);
+  border: 2px solid rgba(251,191,36,0.3);
+  border-radius: 14px; color: white;
+  font-family: inherit; font-size: 16px; font-weight: 500;
+  transition: all 0.2s;
+}
+.field-input::placeholder { color: rgba(196,181,253,0.5); }
+.field-input:focus {
+  outline: none; border-color: var(--gold);
+  background: rgba(10,5,30,0.95);
+  box-shadow: 0 0 0 4px rgba(251,191,36,0.15);
+}
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.setup-actions { display: flex; flex-direction: column; gap: 12px; align-items: center; margin-top: 8px; }
+.setup-actions .btn-primary { padding: 18px 44px; font-size: 17px; letter-spacing: 0.5px; }
+
+/* ============ GAME ============ */
+#gameScreen.active { display: flex; flex-direction: column; min-height: 100vh; }
+.game-header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 12px 20px;
+  background: rgba(30,15,70,0.85);
+  border: 2px solid rgba(251,191,36,0.3);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(10px);
+  flex-wrap: wrap;
+}
+.player-chip { display: flex; align-items: center; gap: 12px; }
+.avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), #f59e0b);
+  color: #4c1d95; font-family: 'Baloo 2', sans-serif; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.player-name { font-weight: 700; font-size: 15px; color: white; line-height: 1.2; }
+.player-class { font-size: 12px; color: var(--muted); font-weight: 600; }
+.rank-badge {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  border: 2px solid rgba(255,255,255,0.15);
+  transition: all 0.3s;
+}
+.rank-badge .rank-emoji { font-size: 22px; }
+.rank-badge .rank-name {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 13px; font-weight: 800;
+  letter-spacing: 1px; text-transform: uppercase;
+}
+.rank-badge .rank-xp { font-size: 11px; color: var(--muted); font-weight: 600; }
+.rank-badge.pulse { animation: rankPulse 0.6s ease; }
+@keyframes rankPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); box-shadow: 0 0 30px var(--gold-glow); }
+}
+
+.game-layout { display: grid; grid-template-columns: 1fr 280px; gap: 16px; align-items: start; }
+.game-main {
+  background: rgba(30,15,70,0.7);
+  border: 2px solid rgba(251,191,36,0.25);
+  border-radius: 20px;
+  padding: 20px;
+}
+
+/* Timer */
+.timer-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.timer-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: rgba(251,191,36,0.15);
+  border: 2px solid var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; flex-shrink: 0;
+}
+.timer-icon.warning {
+  background: rgba(239,68,68,0.2); border-color: var(--red);
+  animation: pulse 0.6s ease infinite;
+}
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+.timer-detail { flex: 1; }
+.timer-label { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.timer-label span { font-size: 12px; font-weight: 800; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+.timer-num { font-family: 'Baloo 2', sans-serif; font-size: 18px; color: var(--gold); font-weight: 800; }
+.timer-num.warning { color: var(--red); }
+.timer-bar-bg { height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; }
+.timer-bar-fill {
+  height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+  border-radius: 5px; transition: width 1s linear, background 0.3s; width: 100%;
+}
+.timer-bar-fill.warning { background: linear-gradient(90deg, var(--red), #f87171); }
+
+/* Question */
+.question-box {
+  background: rgba(10,5,30,0.6);
+  border: 3px solid var(--gold);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: inset 0 0 40px rgba(251,191,36,0.08);
+  position: relative;
+}
+.q-number {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 12px; font-weight: 800; color: var(--gold);
+  letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 8px; text-align: center;
+}
+.q-chapter {
+  font-size: 10px; color: var(--muted); font-weight: 700;
+  text-align: center; margin-bottom: 10px; letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.q-text {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: clamp(16px, 2vw, 20px); font-weight: 700;
+  color: white; line-height: 1.45; text-align: center;
+}
+
+.xp-float {
+  position: absolute; top: 20%; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 42px; font-weight: 800;
+  color: var(--gold-bright);
+  text-shadow: 0 0 30px var(--gold-glow);
+  pointer-events: none; z-index: 10;
+  animation: xpFloatUp 1.2s ease-out forwards;
+}
+@keyframes xpFloatUp {
+  0% { opacity: 0; transform: translateX(-50%) translateY(20px) scale(0.5); }
+  30% { opacity: 1; transform: translateX(-50%) translateY(-10px) scale(1.2); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-80px) scale(1); }
+}
+
+/* Options */
+.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.option {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(76,29,149,0.9), rgba(45,27,105,0.9));
+  border: 2px solid rgba(251,191,36,0.3);
+  border-radius: 16px;
+  color: white; font-family: inherit;
+  font-size: 14px; font-weight: 500;
+  text-align: left; cursor: pointer;
+  transition: all 0.25s ease;
+  min-height: 64px;
+}
+.option:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--gold), #f59e0b);
+  color: #4c1d95;
+  border-color: var(--gold-bright);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--gold-glow);
+}
+.option .letter {
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800; font-size: 22px;
+  min-width: 28px; color: var(--gold);
+  transition: color 0.2s;
+}
+.option:hover:not(:disabled) .letter { color: #4c1d95; }
+.option .opt-text { flex: 1; line-height: 1.4; }
+.option:disabled { cursor: default; }
+.option.correct {
+  background: linear-gradient(135deg, var(--green), #16a34a) !important;
+  color: white !important;
+  border-color: var(--green) !important;
+  box-shadow: 0 0 30px rgba(34,197,94,0.6) !important;
+  animation: correctFlash 0.6s ease;
+}
+.option.correct .letter { color: white; }
+.option.wrong {
+  background: linear-gradient(135deg, #7a1a1a, var(--red)) !important;
+  color: white !important;
+  border-color: var(--red) !important;
+  animation: wrongFlash 0.4s ease;
+}
+.option.wrong .letter { color: white; }
+.option.dimmed { opacity: 0.25; pointer-events: none; }
+@keyframes correctFlash { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+@keyframes wrongFlash {
+  0%, 25% { transform: translateX(0); }
+  10% { transform: translateX(-6px); }
+  20% { transform: translateX(6px); }
+  40% { transform: translateX(-4px); }
+  60% { transform: translateX(4px); }
+  80% { transform: translateX(-2px); }
+}
+
+/* Lifelines */
+.lifelines { display: flex; justify-content: center; gap: 12px; margin-bottom: 16px; }
+.lifeline {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 12px 20px;
+  background: rgba(251,191,36,0.1);
+  border: 2px solid var(--gold);
+  border-radius: 14px;
+  color: var(--gold); font-family: inherit;
+  font-size: 11px; font-weight: 800; letter-spacing: 1px;
+  cursor: pointer; transition: all 0.2s;
+  text-transform: uppercase;
+}
+.lifeline:hover:not(:disabled) { background: var(--gold); color: #4c1d95; transform: translateY(-2px); }
+.lifeline:disabled { opacity: 0.3; cursor: not-allowed; position: relative; }
+.lifeline:disabled::after {
+  content: '✕'; position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; color: var(--red);
+}
+.lifeline-icon { font-size: 22px; }
+
+/* Footer */
+.game-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 16px; border-top: 1px solid rgba(251,191,36,0.15);
+  gap: 12px; flex-wrap: wrap;
+}
+.xp-display { display: flex; flex-direction: column; }
+.xp-label { font-size: 11px; font-weight: 800; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; }
+.xp-value { font-family: 'Baloo 2', sans-serif; font-size: 24px; font-weight: 800; color: var(--gold-bright); }
+
+/* Ladder */
+.ladder-panel {
+  background: rgba(30,15,70,0.85);
+  border: 2px solid rgba(251,191,36,0.3);
+  border-radius: 18px;
+  padding: 12px 0;
+  max-height: 75vh;
+  overflow-y: auto;
+}
+.ladder-panel::-webkit-scrollbar { width: 6px; }
+.ladder-panel::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+.ladder-header {
+  padding: 8px 16px 12px;
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 11px; font-weight: 800; color: var(--gold);
+  letter-spacing: 1.5px; text-transform: uppercase;
+  border-bottom: 1px solid rgba(251,191,36,0.15);
+  margin-bottom: 8px;
+}
+.ladder-row {
+  display: flex; align-items: center;
+  padding: 6px 16px; gap: 10px;
+  font-size: 13px; color: var(--muted);
+  transition: all 0.3s;
+  border-radius: 8px; margin: 1px 8px;
+}
+.ladder-row .level { font-family: 'Baloo 2', sans-serif; font-weight: 800; min-width: 24px; text-align: right; }
+.ladder-row .prize { flex: 1; font-weight: 600; font-variant-numeric: tabular-nums; }
+.ladder-row .icon { font-size: 12px; min-width: 16px; text-align: center; }
+.ladder-row.milestone { color: var(--gold); font-weight: 700; }
+.ladder-row.current {
+  background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+  color: #4c1d95; font-weight: 800;
+  box-shadow: 0 0 20px var(--gold-glow);
+  transform: scale(1.02);
+}
+.ladder-row.current .level, .ladder-row.current .prize, .ladder-row.current .icon { color: #4c1d95; }
+.ladder-row.passed { color: var(--green); opacity: 0.8; }
+
+/* ============ RANK UP TOAST ============ */
+#rankUpToast {
+  position: fixed; top: 30px; left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  padding: 16px 32px;
+  background: linear-gradient(135deg, var(--gold), #f59e0b);
+  color: #4c1d95;
+  border-radius: 16px;
+  font-family: 'Baloo 2', sans-serif;
+  font-weight: 800;
+  box-shadow: 0 20px 60px var(--gold-glow);
+  z-index: 3000; opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-align: center; pointer-events: none;
+}
+#rankUpToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#rankUpToast .toast-label { font-size: 11px; letter-spacing: 2px; opacity: 0.8; margin-bottom: 2px; }
+#rankUpToast .toast-value { font-size: 24px; letter-spacing: 1px; }
+
+/* ============ OVERLAYS ============ */
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+  z-index: 1000; justify-content: center; align-items: center;
+  padding: 20px; animation: fadeIn 0.25s ease;
+}
+.overlay.show { display: flex; }
+.modal-box {
+  width: 100%; max-width: 480px;
+  background: linear-gradient(135deg, var(--bg-2), var(--bg-3));
+  border: 3px solid var(--gold); border-radius: 24px;
+  padding: 32px 28px; text-align: center;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 60px rgba(251,191,36,0.2);
+  animation: modalPop 0.3s ease;
+}
+@keyframes modalPop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal-title {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 26px; font-weight: 800;
+  color: var(--gold-bright); margin-bottom: 12px;
+}
+.modal-message { color: white; font-size: 16px; line-height: 1.5; margin-bottom: 24px; }
+.modal-message strong { color: var(--gold); }
+.modal-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.modal-actions .btn { flex: 1; min-width: 130px; }
+.audience-chart { display: flex; justify-content: center; gap: 12px; margin: 20px 0; align-items: flex-end; height: 140px; }
+.audience-bar { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; max-width: 60px; }
+.audience-bar-fill {
+  width: 100%;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  border-radius: 6px 6px 0 0;
+  min-height: 4px; transition: height 0.8s ease;
+  box-shadow: 0 0 15px rgba(251,191,36,0.4);
+}
+.audience-bar-label { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 16px; color: var(--gold-bright); }
+.audience-bar-pct { font-size: 11px; color: var(--muted); font-weight: 700; }
+
+/* ============ RESULT ============ */
+#resultScreen.active { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+.result-card {
+  width: 100%; max-width: 680px;
+  background: rgba(30,15,70,0.95);
+  border: 3px solid var(--gold); border-radius: 28px;
+  padding: 40px 32px; text-align: center;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 80px rgba(251,191,36,0.15);
+  position: relative; overflow: hidden;
+}
+.result-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+  background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
+}
+.result-rank {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 12px 28px; border-radius: 999px;
+  background: rgba(251,191,36,0.15);
+  border: 2px solid var(--gold);
+  margin-bottom: 16px;
+  animation: bounce 2s ease-in-out infinite;
+}
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.result-rank .emoji { font-size: 48px; }
+.result-rank .name {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 32px; font-weight: 800;
+  letter-spacing: 2px; text-transform: uppercase;
+  background: linear-gradient(135deg, #fff, var(--gold-bright));
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.result-title { font-family: 'Baloo 2', sans-serif; font-size: 24px; font-weight: 800; color: white; margin-bottom: 6px; }
+.result-sub { color: var(--muted); font-size: 15px; margin-bottom: 24px; }
+.result-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+.result-stat {
+  background: rgba(10,5,30,0.6);
+  border: 1px solid rgba(251,191,36,0.2);
+  border-radius: 14px; padding: 16px 8px;
+}
+.result-stat-val {
+  font-family: 'Baloo 2', sans-serif;
+  font-size: 24px; font-weight: 800;
+  color: var(--gold-bright); display: block; line-height: 1.1;
+}
+.result-stat-lbl {
+  font-size: 10px; color: var(--muted); font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  margin-top: 6px; display: block;
+}
+.breakdown-section {
+  background: rgba(10,5,30,0.4);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px; padding: 16px;
+  margin-bottom: 24px; text-align: left;
+}
+.breakdown-title {
+  font-size: 11px; font-weight: 800; color: var(--gold);
+  letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px;
+}
+.breakdown-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0; gap: 12px; font-size: 13px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.breakdown-row:last-child { border-bottom: none; }
+.breakdown-label { color: var(--muted); font-weight: 600; flex: 1; }
+.breakdown-score { color: white; font-weight: 700; font-variant-numeric: tabular-nums; }
+.breakdown-pct { color: var(--gold-bright); font-weight: 800; min-width: 55px; text-align: right; }
+.result-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.result-actions .btn { flex: 1; min-width: 140px; }
+
+#confetti { position: fixed; inset: 0; pointer-events: none; z-index: 999; }
+
+/* ============ PRINT REPORT ============ */
+#printReport {
+  display: none;
+  font-family: 'Source Serif 4', Georgia, serif;
+  color: #1a1a1a; background: white;
+  font-size: 11pt; line-height: 1.5;
+}
+.print-page { max-width: 210mm; margin: 0 auto; padding: 15mm; }
+.print-header {
+  display: flex; align-items: center; gap: 16px;
+  border-bottom: 3px double #333;
+  padding-bottom: 16px; margin-bottom: 20px;
+}
+.print-logo {
+  width: 60px; height: 60px;
+  border: 2px solid #333; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; flex-shrink: 0;
+}
+.print-title-block { flex: 1; text-align: center; }
+.print-title-block h1 { font-size: 18pt; font-weight: 700; margin-bottom: 2px; letter-spacing: 1px; }
+.print-title-block p { font-size: 11pt; font-style: italic; color: #555; }
+.print-school { font-size: 10pt; color: #666; text-align: right; }
+.print-section { margin-bottom: 18px; }
+.print-section h2 {
+  font-size: 12pt; font-weight: 700;
+  padding: 6px 12px; background: #1a1a1a; color: white;
+  border-radius: 4px; margin-bottom: 12px; letter-spacing: 0.5px;
+}
+.print-section table { width: 100%; border-collapse: collapse; font-size: 10.5pt; }
+.print-section table td, .print-section table th {
+  padding: 6px 10px; border: 1px solid #ccc; text-align: left;
+}
+.print-section table th { background: #f0f0f0; font-weight: 700; }
+.print-section table td:first-child { width: 35%; font-weight: 600; background: #fafafa; }
+.print-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+.print-stat { border: 1px solid #ccc; border-radius: 4px; padding: 10px; text-align: center; }
+.print-stat .val { display: block; font-size: 16pt; font-weight: 700; color: #1a1a1a; line-height: 1.1; }
+.print-stat .lbl {
+  display: block; font-size: 9pt; color: #666;
+  margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.print-note {
+  background: #f9f9f9; border-left: 4px solid #333;
+  padding: 12px 16px; font-size: 10.5pt; line-height: 1.6;
+}
+.print-note p { margin-bottom: 8px; }
+.print-note p:last-child { margin-bottom: 0; }
+.print-note strong { color: #1a1a1a; }
+.print-signatures { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px; text-align: center; }
+.signature-box { padding-top: 10px; }
+.signature-box .label { font-size: 10pt; margin-bottom: 60px; }
+.signature-box .line { border-top: 1px solid #333; padding-top: 6px; font-size: 10pt; color: #333; }
+.print-footer {
+  margin-top: 20px; padding-top: 10px;
+  border-top: 1px solid #ccc;
+  font-size: 9pt; color: #888;
+  text-align: center; font-style: italic;
+}
+
+@media print {
+  @page { size: A4; margin: 0; }
+  body { background: white !important; color: #000 !important; padding: 0 !important; margin: 0 !important; }
+  body > *:not(#printReport) { display: none !important; }
+  #printReport { display: block !important; }
+  .print-page { page-break-after: always; }
+  .print-page:last-child { page-break-after: auto; }
+}
+
+@media (max-width: 900px) {
+  .game-layout { grid-template-columns: 1fr; }
+  .ladder-panel { display: none; }
+}
+@media (max-width: 640px) {
+  body { padding: 8px; }
+  .setup-card { padding: 28px 20px; }
+  .setup-title { font-size: 28px; }
+  .game-main { padding: 14px; }
+  .q-text { font-size: 15px; }
+  .options-grid { grid-template-columns: 1fr; gap: 8px; }
+  .option { padding: 14px 16px; font-size: 13px; min-height: 56px; }
+  .option .letter { font-size: 18px; }
+  .lifelines { gap: 8px; }
+  .lifeline { padding: 10px 14px; font-size: 10px; }
+  .lifeline-icon { font-size: 18px; }
+  .result-title { font-size: 20px; }
+  .result-stats { grid-template-columns: repeat(2, 1fr); }
+  .result-rank .emoji { font-size: 36px; }
+  .result-rank .name { font-size: 24px; }
+  .player-name { font-size: 13px; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rank-badge { padding: 6px 10px; }
+  .rank-badge .rank-name { font-size: 11px; }
+  .field-row { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ SETUP ============ -->
+<div class="screen active" id="setupScreen">
+  <div class="setup-card">
+    <div class="setup-badge">🎯 Grade 5 · Pancasila</div>
+    <h1 class="setup-title">Pancasila Level Up</h1>
+    <p class="setup-sub">Situational Quiz · Chapters 1 &amp; 2</p>
+    <p class="setup-info">Rookie → Apprentice → Expert → Master → Legend</p>
+
+    <div class="rank-preview">
+      <span>🎯 Rookie</span>
+      <span>📚 Apprentice</span>
+      <span>🎓 Expert</span>
+      <span>⚡ Master</span>
+      <span>👑 Legend</span>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="nameInput">Student Name</label>
+      <input type="text" id="nameInput" class="field-input" placeholder="e.g. Aditya Pratama" maxlength="40" autocomplete="off">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label class="field-label" for="classInput">Class</label>
+        <input type="text" id="classInput" class="field-input" placeholder="e.g. 5A" maxlength="20" autocomplete="off">
+      </div>
+      <div class="field">
+        <label class="field-label" for="schoolInput">School (optional)</label>
+        <input type="text" id="schoolInput" class="field-input" placeholder="e.g. SDN 1 Jakarta" maxlength="40" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="setup-actions">
+      <button class="btn btn-primary" id="startBtn">🎮 Start Quiz</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ GAME ============ -->
+<div class="screen" id="gameScreen">
+  <div class="game-header">
+    <div class="player-chip">
+      <div class="avatar" id="avatar">?</div>
+      <div>
+        <div class="player-name" id="playerNameDisplay">-</div>
+        <div class="player-class" id="playerClassDisplay">Class -</div>
+      </div>
+    </div>
+    <div class="rank-badge" id="rankBadge">
+      <span class="rank-emoji" id="rankEmoji">🎯</span>
+      <div>
+        <div class="rank-name" id="rankName">Rookie</div>
+        <div class="rank-xp" id="rankXp">0 XP</div>
+      </div>
+    </div>
+    <button class="btn btn-ghost" id="muteBtn">🔊</button>
+  </div>
+
+  <div class="game-layout">
+    <div class="game-main">
+      <div class="timer-row">
+        <div class="timer-icon" id="timerIcon">⏱️</div>
+        <div class="timer-detail">
+          <div class="timer-label">
+            <span>Time Left</span>
+            <span class="timer-num" id="timerNum">45s</span>
+          </div>
+          <div class="timer-bar-bg">
+            <div class="timer-bar-fill" id="timerBarFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="question-box" id="questionBox">
+        <div class="q-number" id="qNumber">QUESTION 1 / 40</div>
+        <div class="q-chapter" id="qChapter">Chapter 1</div>
+        <div class="q-text" id="qText">Loading...</div>
+      </div>
+
+      <div class="options-grid" id="optionsGrid"></div>
+
+      <div class="lifelines">
+        <button class="lifeline" id="ll5050" onclick="useLifeline('fifty')">
+          <span class="lifeline-icon">50:50</span>
+          <span>50:50</span>
+        </button>
+        <button class="lifeline" id="llAudience" onclick="useLifeline('audience')">
+          <span class="lifeline-icon">👥</span>
+          <span>Audience</span>
+        </button>
+        <button class="lifeline" id="llPhone" onclick="useLifeline('phone')">
+          <span class="lifeline-icon">📞</span>
+          <span>Phone</span>
+        </button>
+      </div>
+
+      <div class="game-footer">
+        <div class="xp-display">
+          <div class="xp-label">Current XP</div>
+          <div class="xp-value" id="currentXp">0 XP</div>
+        </div>
+        <button class="btn btn-secondary" id="walkAwayBtn" onclick="confirmWalkAway()" disabled>🏳️ Walk Away</button>
+      </div>
+    </div>
+
+    <aside class="ladder-panel">
+      <div class="ladder-header">💰 XP Ladder</div>
+      <div id="ladderContainer"></div>
+    </aside>
+  </div>
+</div>
+
+<!-- ============ RESULT ============ -->
+<div class="screen" id="resultScreen">
+  <div class="result-card">
+    <div class="result-rank">
+      <span class="emoji" id="resultRankEmoji">🎯</span>
+      <span class="name" id="resultRankName">Rookie</span>
+    </div>
+    <h2 class="result-title" id="resultTitle">Quiz Complete</h2>
+    <p class="result-sub" id="resultSub">Great effort!</p>
+
+    <div class="result-stats">
+      <div class="result-stat">
+        <span class="result-stat-val" id="rXp">0</span>
+        <span class="result-stat-lbl">XP</span>
+      </div>
+      <div class="result-stat">
+        <span class="result-stat-val" id="rLevel">0/40</span>
+        <span class="result-stat-lbl">Level</span>
+      </div>
+      <div class="result-stat">
+        <span class="result-stat-val" id="rAccuracy">0%</span>
+        <span class="result-stat-lbl">Accuracy</span>
+      </div>
+      <div class="result-stat">
+        <span class="result-stat-val" id="rGrade">-</span>
+        <span class="result-stat-lbl">Grade</span>
+      </div>
+    </div>
+
+    <div class="breakdown-section">
+      <div class="breakdown-title">📊 Breakdown by Category</div>
+      <div id="breakdownRows"></div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn btn-primary" id="printBtn">📄 Print Report</button>
+      <button class="btn btn-secondary" id="playAgainBtn">🔄 Play Again</button>
+      <button class="btn btn-ghost" id="exitBtn">🚪 Exit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PRINT REPORT ============ -->
+<div id="printReport">
+  <div class="print-page">
+    <div class="print-header">
+      <div class="print-logo">🎓</div>
+      <div class="print-title-block">
+        <h1>PANCASILA QUIZ REPORT</h1>
+        <p>Pancasila Education Quiz Assessment Report</p>
+      </div>
+      <div class="print-school" id="printSchool">SD</div>
+    </div>
+
+    <div class="print-section">
+      <h2>A. Student Identity</h2>
+      <table>
+        <tr><td>Full Name</td><td id="printName">-</td></tr>
+        <tr><td>Class</td><td id="printClass">-</td></tr>
+        <tr><td>Date of Assessment</td><td id="printDate">-</td></tr>
+        <tr><td>Duration</td><td id="printDuration">-</td></tr>
+      </table>
+    </div>
+
+    <div class="print-section">
+      <h2>B. Quiz Result</h2>
+      <div class="print-stats">
+        <div class="print-stat">
+          <span class="val" id="printXp">0</span>
+          <span class="lbl">Total XP</span>
+        </div>
+        <div class="print-stat">
+          <span class="val" id="printRank">-</span>
+          <span class="lbl">Rank</span>
+        </div>
+        <div class="print-stat">
+          <span class="val" id="printAccuracy">0%</span>
+          <span class="lbl">Accuracy</span>
+        </div>
+        <div class="print-stat">
+          <span class="val" id="printGrade">-</span>
+          <span class="lbl">Grade</span>
+        </div>
+      </div>
+      <table>
+        <tr><td>Level Reached</td><td id="printLevel">-</td></tr>
+        <tr><td>Correct Answers</td><td id="printCorrect">-</td></tr>
+        <tr><td>Wrong Answers</td><td id="printWrong">-</td></tr>
+      </table>
+    </div>
+
+    <div class="print-section">
+      <h2>C. Breakdown by Category</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Correct</th>
+            <th>Total</th>
+            <th>Accuracy</th>
+          </tr>
+        </thead>
+        <tbody id="printBreakdown">
+        </tbody>
+      </table>
+    </div>
+
+    <div class="print-section">
+      <h2>D. Notes &amp; Recommendations</h2>
+      <div class="print-note" id="printNotes">
+      </div>
+    </div>
+
+    <div class="print-section">
+      <h2>E. Signatures</h2>
+      <div class="print-signatures">
+        <div class="signature-box">
+          <div class="label">Parent / Guardian</div>
+          <div class="line">(_______________________)</div>
+        </div>
+        <div class="signature-box">
+          <div class="label">Teacher</div>
+          <div class="line">(_______________________)</div>
+        </div>
+        <div class="signature-box">
+          <div class="label">Student</div>
+          <div class="line">(_______________________)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="print-footer">
+      Generated by Pancasila Level Up · <span id="printFooterDate"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ RANK UP TOAST ============ -->
+<div id="rankUpToast">
+  <div class="toast-label">RANK UP!</div>
+  <div class="toast-value" id="toastValue">📚 Apprentice</div>
+</div>
+
+<!-- ============ MODALS ============ -->
+<div class="overlay" id="finalAnswerModal">
+  <div class="modal-box">
+    <div class="modal-title">Is that your final answer?</div>
+    <div class="modal-message" id="finalAnswerMessage">You chose: <strong>A</strong></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="confirmAnswer()">Yes, Final</button>
+      <button class="btn btn-secondary" onclick="cancelAnswer()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="walkAwayModal">
+  <div class="modal-box">
+    <div class="modal-title">Walk away?</div>
+    <div class="modal-message" id="walkAwayMessage">You will keep <strong>0 XP</strong> and end the quiz.</div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="confirmWalkAwayYes()">Yes, Walk Away</button>
+      <button class="btn btn-secondary" onclick="closeWalkAwayModal()">Keep Playing</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="audienceModal">
+  <div class="modal-box">
+    <div class="modal-title">👥 Ask the Audience</div>
+    <div class="modal-message">Audience vote estimates:</div>
+    <div class="audience-chart" id="audienceChart"></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="closeAudienceModal()">Okay</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="phoneModal">
+  <div class="modal-box">
+    <div class="modal-title">📞 Phone a Friend</div>
+    <div class="modal-message" id="phoneMessage">...</div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="closePhoneModal()">Thanks</button>
+    </div>
+  </div>
+</div>
+
+<canvas id="confetti"></canvas>
+
+<script>
+/* ============================================================
+   QUESTIONS — Grade 5 Pancasila (Situational)
+   Chapters 1 & 2 — 40 questions
+   ============================================================ */
+const QUESTIONS = [
+  // Part 1 — Chapter 1: Applying Pancasila (Q1–10)
+  { ch: "Chapter 1 · Applying Pancasila",
+    q: "You notice that your new classmate is eating alone during break time because she brings food from a different culture. What is the best action according to the 3rd Principle of Pancasila (Unity)?",
+    o: ["Ignore her because she is different.", "Invite her to sit and eat with you and your friends.", "Laugh at the food she brought.", "Tell her to eat somewhere else."], a: 1 },
+  { ch: "Chapter 1 · Applying Pancasila",
+    q: "Your group is having a discussion about a school project. One of your friends gives a silly idea. How should you respond?",
+    o: ["Laugh at him and tell him his idea is stupid.", "Ignore him and do the project by yourself.", "Listen politely and then suggest a better idea together.", "Ask the teacher to remove him from the group."], a: 2 },
+  { ch: "Chapter 1 · Applying Pancasila",
+    q: "During a class vote for the field trip destination, your favorite place loses. What should you do?",
+    o: ["Refuse to go on the trip.", "Accept the result and join the trip happily.", "Complain to your parents.", "Sulk in the corner all day."], a: 1 },
+  { ch: "Chapter 1 · Applying Pancasila",
+    q: "A friend from a different religion is praying. What is the most respectful thing to do?",
+    o: ["Make noise so he finishes quickly.", "Wait quietly and don't disturb him.", "Ask him why he prays differently.", "Tell him to stop praying."], a: 1 },
+  { ch: "Chapter 1 · Applying Pancasila",
+    q: "You are in a study group. You have the highest grades. Your friend is struggling with math. How do you apply the 2nd Principle (Humanity)?",
+    o: ["Tell him he is not smart enough.", "Help him understand the math problems patiently.", "Let him copy your answers.", "Ignore him and focus on your own work."], a: 1 },
+  { ch: "Chapter 1 · Applying Pancasila",
+    q: "The classroom is very messy after an art project. Everyone is tired. What shows the 5th Principle (Social Justice)?",
+    o: ["Point at the janitor and tell him to clean it.", "Expect the smartest students to clean up.", "Work together fairly to clean the classroom.", "Leave the mess and go home."], a: 2 },
+  { ch: "Chapter 1 · Applying Pancasila",
+    q: "A new student from another island joins your class. He speaks with a different accent. What should you do?",
+    o: ["Try to learn his accent to make fun of him.", "Treat him like any other friend and help him adjust.", "Ask him to change his accent to fit in.", "Avoid talking to him so he doesn't feel embarrassed."], a: 1 },
+  { ch: "Chapter 1 · Applying Pancasila",
+    q: "You see a younger student being bullied by someone bigger. What is the best action?",
+    o: ["Watch and laugh.", "Fight the bully immediately.", "Report it to a teacher and help the younger student.", "Pretend you didn't see anything."], a: 2 },
+  { ch: "Chapter 1 · Applying Pancasila",
+    q: "Which action shows the application of the 5th Principle (Social Justice) in sharing snacks?",
+    o: ["Taking the biggest piece for yourself.", "Dividing the snack equally among your friends.", "Hiding the snack so no one asks for it.", "Giving the smallest piece to a friend you don't like."], a: 1 },
+  { ch: "Chapter 1 · Applying Pancasila",
+    q: "In a discussion, your friend is talking, but you disagree with her. What should you do?",
+    o: ["Cut her off and say she is wrong.", "Let her finish, then calmly explain your opinion.", "Walk away from the discussion.", "Tell everyone not to listen to her."], a: 1 },
+
+  // Part 2 — Chapter 2: Understanding Norms (Q11–20)
+  { ch: "Chapter 2 · Understanding Norms",
+    q: "You are riding a motorcycle with your dad. You arrive at a red light, and there are no other cars. What should your dad do?",
+    o: ["Cross the road because it's empty.", "Stop and wait for the green light.", "Turn left to avoid the traffic light.", "Drive faster to cross quickly."], a: 1 },
+  { ch: "Chapter 2 · Understanding Norms",
+    q: "You find a wallet with money and an ID card in the school bathroom. No one is watching. What do you do?",
+    o: ["Keep the money and throw away the ID.", "Take the money to buy food at the canteen.", "Give it to the teacher so it can be returned to its owner.", "Leave it there and ignore it."], a: 2 },
+  { ch: "Chapter 2 · Understanding Norms",
+    q: "An older neighbor is carrying heavy groceries. You are in a hurry to play. What is the polite thing to do?",
+    o: ["Pretend you don't see her.", "Offer to help her carry the bags.", "Run away so she doesn't ask you.", "Tell her she should carry them herself."], a: 1 },
+  { ch: "Chapter 2 · Understanding Norms",
+    q: "Your family is having dinner. Before eating, your parents remind you to pray. Which norm is being applied?",
+    o: ["Legal Norm", "Religious Norm", "Courtesy Norm", "Moral Norm"], a: 1 },
+  { ch: "Chapter 2 · Understanding Norms",
+    q: "You accidentally bump into someone in the hallway. What is the best example of a Courtesy Norm (Etiquette)?",
+    o: ["Say \"Excuse me\" or \"Sorry.\"", "Quickly run away so they don't get angry.", "Laugh and keep walking.", "Tell them they were standing in your way."], a: 0 },
+  { ch: "Chapter 2 · Understanding Norms",
+    q: "A student is given a homework assignment. He decides to copy his friend's work instead of doing it himself. What norm is he violating?",
+    o: ["Legal Norm", "Moral Norm (Honesty)", "Courtesy Norm", "Religious Norm"], a: 1 },
+  { ch: "Chapter 2 · Understanding Norms",
+    q: "You are at a public park. You have an empty plastic bottle. The trash can is 10 meters away. What do you do?",
+    o: ["Throw it under the bench.", "Leave it on the grass.", "Hold onto it until you reach the trash can.", "Give it to a friend to throw away secretly."], a: 2 },
+  { ch: "Chapter 2 · Understanding Norms",
+    q: "During a school assembly, the principal is giving a speech. What is the respectful thing to do?",
+    o: ["Talk with your friends in the back row.", "Play games on your phone.", "Listen quietly and pay attention.", "Run around the field."], a: 2 },
+  { ch: "Chapter 2 · Understanding Norms",
+    q: "A friend invites you to his birthday party. You are the only one there from a different religion. How do you apply the 1st Principle?",
+    o: ["Refuse to attend because it's not your holiday.", "Attend, wish him well, and respect the party's customs.", "Go but sit in the corner and complain.", "Ask him to change the party rules for you."], a: 1 },
+  { ch: "Chapter 2 · Understanding Norms",
+    q: "Which of the following is an example of a Legal Norm in the community?",
+    o: ["Wearing polite clothes when visiting a friend.", "Paying income tax on time.", "Saying \"thank you\" after receiving help.", "Feeling guilty after lying to a parent."], a: 1 },
+
+  // Part 3 — Chapter 2: Rights and Duties (Q21–30)
+  { ch: "Chapter 2 · Rights & Duties",
+    q: "You have the right to use the school library. What is your duty when using it?",
+    o: ["Tear out pages you like.", "Keep the books forever.", "Return the books on time and keep them clean.", "Make loud noises with your friends."], a: 2 },
+  { ch: "Chapter 2 · Rights & Duties",
+    q: "Your mother asks you to sweep the floor, but you want to keep playing a video game. What is the right thing to do?",
+    o: ["Pretend you didn't hear her.", "Ask your sibling to do it.", "Pause the game and help your mother.", "Throw a tantrum."], a: 2 },
+  { ch: "Chapter 2 · Rights & Duties",
+    q: "You see a classmate being excluded from a group because he is poor. What right is being violated?",
+    o: ["The right to an education.", "The right to be treated equally and fairly.", "The right to eat food.", "The right to play."], a: 1 },
+  { ch: "Chapter 2 · Rights & Duties",
+    q: "In your classroom discussion, everyone wants to speak at the same time. It gets very noisy. What is the best solution?",
+    o: ["The loudest person gets to speak.", "The teacher forces only one person to talk.", "The class agrees to raise hands and take turns speaking.", "Everyone stops talking and goes home."], a: 2 },
+  { ch: "Chapter 2 · Rights & Duties",
+    q: "You are the class leader. A friend asks you to give him a higher grade on his report card in exchange for a gift. What do you do?",
+    o: ["Accept the gift and change the grade.", "Refuse the gift and explain that fairness is more important.", "Change the grade but only for a bigger gift.", "Tell the whole class and embarrass him."], a: 1 },
+  { ch: "Chapter 2 · Rights & Duties",
+    q: "A classmate is throwing trash out of the window. You want to remind him. Which approach is the most polite?",
+    o: ["Yell at him in front of the whole class.", "Report him directly to the principal.", "Politely tell him to throw it in the trash can nearby.", "Throw the trash back at him."], a: 2 },
+  { ch: "Chapter 2 · Rights & Duties",
+    q: "Which of these is a right of a student at school?",
+    o: ["Getting free food every day.", "Getting a safe and comfortable learning environment.", "Not having to do any homework.", "Being allowed to skip class whenever they want."], a: 1 },
+  { ch: "Chapter 2 · Rights & Duties",
+    q: "As a citizen, what is a duty when you cross the street?",
+    o: ["Crossing anywhere you want.", "Using a phone while crossing.", "Crossing at the zebra cross and looking both ways.", "Running very fast without looking."], a: 2 },
+  { ch: "Chapter 2 · Rights & Duties",
+    q: "Your friend is cheating during an exam. He asks you to be quiet and not tell the teacher. What should you do?",
+    o: ["Keep quiet because he is your friend.", "Ask him to stop and warn him that you will report it if he continues.", "Help him cheat by giving him answers.", "Tell the teacher immediately without warning."], a: 1 },
+  { ch: "Chapter 2 · Rights & Duties",
+    q: "In a gotong royong (community service) event at school, your group is assigned to clean the drains. You think it's a dirty job. What should you do?",
+    o: ["Ask to swap with another group.", "Do it half-heartedly.", "Do it with your group, because it's a shared duty.", "Refuse to do it."], a: 2 },
+
+  // Part 4 — Chapters 1 & 2: Problem Solving (Q31–40)
+  { ch: "Chapters 1 & 2 · Problem Solving",
+    q: "You are chosen as the leader of your study group. What is the best way to show fairness (5th Principle)?",
+    o: ["Do all the work yourself so your friends don't make mistakes.", "Give the hardest tasks to friends you don't like.", "Divide the tasks equally based on everyone's strengths.", "Do nothing and let your friends work."], a: 2 },
+  { ch: "Chapters 1 & 2 · Problem Solving",
+    q: "You see a fight between two older students in the schoolyard. You cannot stop them alone. What is the best action?",
+    o: ["Join the fight.", "Record it with your phone.", "Call a teacher or security guard immediately.", "Tell your friends to watch."], a: 2 },
+  { ch: "Chapters 1 & 2 · Problem Solving",
+    q: "Which behavior reflects the 3rd Principle (Unity) during a class election for the school's student council?",
+    o: ["Only voting for friends from your own region.", "Accepting whoever wins the election and supporting them.", "Being angry if your candidate loses.", "Writing bad things about the other candidates."], a: 1 },
+  { ch: "Chapters 1 & 2 · Problem Solving",
+    q: "A friend is fasting for religious reasons. You are eating in front of him. What should you do?",
+    o: ["Eat loudly to tease him.", "Ask him to join you.", "Eat respectfully and try not to tempt him.", "Tell him he shouldn't fast."], a: 2 },
+  { ch: "Chapters 1 & 2 · Problem Solving",
+    q: "You are at a friend's house. You want to use the bathroom. What is the polite thing to do?",
+    o: ["Just walk in and look for it.", "Ask your friend or his parents for permission.", "Use the bathroom without washing your hands.", "Look through all the doors to find it."], a: 1 },
+  { ch: "Chapters 1 & 2 · Problem Solving",
+    q: "Your class is planning a \"Clean Classroom\" project. What is the best way to decide on the activities?",
+    o: ["The class leader decides everything alone.", "The teacher orders the students what to do.", "The students brainstorm ideas and vote together (Musyawarah).", "The smartest student makes the plan."], a: 2 },
+  { ch: "Chapters 1 & 2 · Problem Solving",
+    q: "You are given Rp 50,000 to buy class supplies. You spend Rp 45,000 on the supplies. What should you do with the remaining Rp 5,000?",
+    o: ["Keep it for your own snacks.", "Give it to a friend.", "Return it to the class treasurer or teacher.", "Drop it on the floor."], a: 2 },
+  { ch: "Chapters 1 & 2 · Problem Solving",
+    q: "You are walking on a sidewalk and see a blind person trying to cross the street. What is the best action?",
+    o: ["Ignore them.", "Laugh at them.", "Help them cross the street safely.", "Walk faster so you don't get in their way."], a: 2 },
+  { ch: "Chapters 1 & 2 · Problem Solving",
+    q: "You are playing soccer with your friends. A friend breaks a rule during the game. What should you do?",
+    o: ["Stop the game and fight him.", "Remind him of the rule and continue the game.", "Break the rule too, since he did it.", "Tell your friends to kick him out of the game."], a: 1 },
+  { ch: "Chapters 1 & 2 · Problem Solving",
+    q: "You are asked to clean the whiteboard by your teacher, but you are not the class cleaning officer. You don't want to do it. What is the right mindset?",
+    o: ["Refuse because it's not your job.", "Do it while complaining loudly.", "Do it willingly as a form of responsibility to the class.", "Ask someone else to do it for you."], a: 2 }
+];
+
+const TOTAL_Q = 40;
+const XP_PER_CORRECT = 100;
+const MAX_XP = TOTAL_Q * XP_PER_CORRECT;
+const LETTERS = ["A", "B", "C", "D"];
+const STORAGE_KEY = "pancasila_levelup_g5_v1";
+
+const RANKS = [
+  { name: "Rookie",     emoji: "🎯", minXp: 0,    maxXp: 999,  color: "#94a3b8" },
+  { name: "Apprentice", emoji: "📚", minXp: 1000, maxXp: 1999, color: "#22c55e" },
+  { name: "Expert",     emoji: "🎓", minXp: 2000, maxXp: 2999, color: "#3b82f6" },
+  { name: "Master",     emoji: "⚡", minXp: 3000, maxXp: 3599, color: "#a855f7" },
+  { name: "Legend",     emoji: "👑", minXp: 3600, maxXp: 4000, color: "#fbbf24" }
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const state = {
+  playerName: "",
+  playerClass: "",
+  playerSchool: "",
+  currentLevel: 1,
+  xp: 0,
+  correctCount: 0,
+  wrongCount: 0,
+  streak: 0,
+  bestStreak: 0,
+  startTime: 0,
+  endTime: 0,
+  lifelines: { fifty: true, audience: true, phone: true },
+  answered: false,
+  pendingAnswer: null,
+  timerInterval: null,
+  timeLeft: 0,
+  timeTotal: 0,
+  muted: false,
+  audioCtx: null,
+  categoryStats: {},
+  previousRank: "Rookie"
+};
+
+/* ============================================================
+   AUDIO
+   ============================================================ */
+function getAudio() {
+  if (!state.audioCtx) {
+    try { state.audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch (e) { return null; }
+  }
+  if (state.audioCtx.state === "suspended") state.audioCtx.resume();
+  return state.audioCtx;
+}
+
+function playTone(freq, duration, type = "sine", delay = 0, vol = 0.15) {
+  if (state.muted) return;
+  const ctx = getAudio();
+  if (!ctx) return;
+  const now = ctx.currentTime + delay;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.linearRampToValueAtTime(vol, now + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now + duration + 0.05);
+}
+
+const sfx = {
+  click: () => playTone(600, 0.04, "sine", 0, 0.06),
+  correct: () => { playTone(523, 0.1, "sine", 0, 0.16); playTone(659, 0.1, "sine", 0.09, 0.16); playTone(784, 0.22, "sine", 0.18, 0.18); },
+  wrong: () => { playTone(220, 0.18, "sawtooth", 0, 0.13); playTone(165, 0.3, "sawtooth", 0.15, 0.13); },
+  tick: () => playTone(880, 0.04, "square", 0, 0.06),
+  finish: () => { playTone(523, 0.15, "sine", 0, 0.18); playTone(659, 0.15, "sine", 0.13, 0.18); playTone(784, 0.15, "sine", 0.26, 0.18); playTone(1047, 0.5, "sine", 0.4, 0.2); },
+  lifeline: () => { playTone(523, 0.08, "sine", 0, 0.1); playTone(784, 0.15, "sine", 0.1, 0.12); },
+  rankup: () => { playTone(659, 0.15, "triangle", 0, 0.18); playTone(880, 0.15, "triangle", 0.12, 0.18); playTone(1047, 0.3, "triangle", 0.24, 0.2); playTone(1319, 0.5, "triangle", 0.38, 0.2); }
+};
+
+document.getElementById("muteBtn").addEventListener("click", () => {
+  state.muted = !state.muted;
+  document.getElementById("muteBtn").textContent = state.muted ? "🔇" : "🔊";
+  if (!state.muted) sfx.click();
+});
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const $ = (id) => document.getElementById(id);
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  $(id).classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function formatXp(xp) {
+  return xp.toLocaleString("id-ID") + " XP";
+}
+
+function getRank(xp) {
+  for (let i = RANKS.length - 1; i >= 0; i--) {
+    if (xp >= RANKS[i].minXp) return RANKS[i];
+  }
+  return RANKS[0];
+}
+
+function getGrade(accuracy) {
+  if (accuracy >= 90) return { grade: "A", desc: "Excellent" };
+  if (accuracy >= 75) return { grade: "B", desc: "Good" };
+  if (accuracy >= 60) return { grade: "C", desc: "Fair" };
+  return { grade: "D", desc: "Needs Improvement" };
+}
+
+function getTimerForLevel(level) {
+  if (level <= 10) return 40;
+  if (level <= 20) return 50;
+  if (level <= 30) return 60;
+  return 75;
+}
+
+function hashColor(name) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) | 0;
+  const hue = Math.abs(h) % 360;
+  return `hsl(${hue}, 65%, 45%)`;
+}
+
+/* ============================================================
+   SETUP
+   ============================================================ */
+$("startBtn").addEventListener("click", () => {
+  const name = $("nameInput").value.trim();
+  const cls = $("classInput").value.trim();
+  const school = $("schoolInput").value.trim();
+
+  if (!name) {
+    $("nameInput").focus();
+    $("nameInput").style.borderColor = "var(--red)";
+    setTimeout(() => $("nameInput").style.borderColor = "", 1500);
+    return;
+  }
+  if (!cls) {
+    $("classInput").focus();
+    $("classInput").style.borderColor = "var(--red)";
+    setTimeout(() => $("classInput").style.borderColor = "", 1500);
+    return;
+  }
+
+  getAudio();
+  state.playerName = name;
+  state.playerClass = cls;
+  state.playerSchool = school || "SD";
+  startGame();
+});
+
+["nameInput", "classInput", "schoolInput"].forEach(id => {
+  $(id).addEventListener("keydown", (e) => {
+    if (e.key === "Enter") $("startBtn").click();
+  });
+});
+
+/* ============================================================
+   GAME
+   ============================================================ */
+function startGame() {
+  state.currentLevel = 1;
+  state.xp = 0;
+  state.correctCount = 0;
+  state.wrongCount = 0;
+  state.streak = 0;
+  state.bestStreak = 0;
+  state.startTime = Date.now();
+  state.endTime = 0;
+  state.lifelines = { fifty: true, audience: true, phone: true };
+  state.answered = false;
+  state.pendingAnswer = null;
+  state.categoryStats = {};
+
+  ["Chapter 1 · Applying Pancasila", "Chapter 2 · Understanding Norms", "Chapter 2 · Rights & Duties", "Chapters 1 & 2 · Problem Solving"].forEach(cat => {
+    state.categoryStats[cat] = { correct: 0, total: 0 };
+  });
+
+  $("playerNameDisplay").textContent = state.playerName;
+  $("playerClassDisplay").textContent = "Class " + state.playerClass;
+  $("avatar").textContent = state.playerName.charAt(0).toUpperCase();
+  $("avatar").style.background = hashColor(state.playerName);
+
+  const initialRank = getRank(0);
+  state.previousRank = initialRank.name;
+  updateRankDisplay(initialRank, 0);
+
+  updateLifelinesUI();
+  renderLadder();
+  loadQuestion();
+  showScreen("gameScreen");
+}
+
+function updateRankDisplay(rank, xp) {
+  $("rankEmoji").textContent = rank.emoji;
+  $("rankName").textContent = rank.name;
+  $("rankXp").textContent = formatXp(xp);
+  $("rankBadge").style.borderColor = rank.color;
+}
+
+function loadQuestion() {
+  clearTimer();
+  state.answered = false;
+  state.pendingAnswer = null;
+
+  const q = QUESTIONS[state.currentLevel - 1];
+  const timerSec = getTimerForLevel(state.currentLevel);
+
+  $("qNumber").textContent = "QUESTION " + state.currentLevel + " / " + TOTAL_Q;
+  $("qChapter").textContent = q.ch;
+  $("qText").textContent = q.q;
+
+  const grid = $("optionsGrid");
+  grid.innerHTML = "";
+  q.o.forEach((optText, i) => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.innerHTML = `<span class="letter">${LETTERS[i]}</span><span class="opt-text">${optText}</span>`;
+    btn.addEventListener("click", () => selectAnswer(i, btn));
+    grid.appendChild(btn);
+  });
+
+  $("currentXp").textContent = formatXp(state.xp);
+  $("walkAwayBtn").disabled = state.currentLevel === 1;
+
+  renderLadder();
+  startTimer(timerSec);
+}
+
+/* ============================================================
+   TIMER
+   ============================================================ */
+function startTimer(seconds) {
+  state.timeLeft = seconds;
+  state.timeTotal = seconds;
+  updateTimerUI();
+
+  state.timerInterval = setInterval(() => {
+    state.timeLeft--;
+    updateTimerUI();
+
+    if ([10, 5, 3, 2, 1].includes(state.timeLeft)) sfx.tick();
+
+    if (state.timeLeft <= 0) {
+      clearTimer();
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+function clearTimer() {
+  if (state.timerInterval) {
+    clearInterval(state.timerInterval);
+    state.timerInterval = null;
+  }
+}
+
+function updateTimerUI() {
+  const pct = Math.max(0, (state.timeLeft / state.timeTotal) * 100);
+  const bar = $("timerBarFill");
+  const num = $("timerNum");
+  const icon = $("timerIcon");
+
+  bar.style.width = pct + "%";
+  num.textContent = state.timeLeft + "s";
+
+  bar.classList.remove("warning");
+  num.classList.remove("warning");
+  icon.classList.remove("warning");
+
+  if (state.timeLeft <= 10) {
+    bar.classList.add("warning");
+    num.classList.add("warning");
+    icon.classList.add("warning");
+  }
+}
+
+/* ============================================================
+   ANSWER
+   ============================================================ */
+function selectAnswer(idx, btn) {
+  if (state.answered) return;
+  sfx.click();
+  state.pendingAnswer = { idx, btn };
+  $("finalAnswerMessage").innerHTML = `You chose: <strong>${LETTERS[idx]}</strong>`;
+  $("finalAnswerModal").classList.add("show");
+}
+
+function confirmAnswer() {
+  $("finalAnswerModal").classList.remove("show");
+  if (!state.pendingAnswer) return;
+
+  clearTimer();
+  state.answered = true;
+
+  const { idx, btn } = state.pendingAnswer;
+  const q = QUESTIONS[state.currentLevel - 1];
+  const isCorrect = (idx === q.a);
+  const allOptions = document.querySelectorAll(".option");
+  allOptions.forEach(b => b.disabled = true);
+
+  state.categoryStats[q.ch].total++;
+
+  if (isCorrect) {
+    btn.classList.add("correct");
+    sfx.correct();
+
+    state.correctCount++;
+    state.streak++;
+    if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+    state.categoryStats[q.ch].correct++;
+
+    state.xp += XP_PER_CORRECT;
+    state.xp = Math.min(state.xp, MAX_XP);
+
+    $("currentXp").textContent = formatXp(state.xp);
+    showXpFloat("+" + XP_PER_CORRECT + " XP");
+
+    const newRank = getRank(state.xp);
+    if (newRank.name !== state.previousRank) {
+      state.previousRank = newRank.name;
+      updateRankDisplay(newRank, state.xp);
+      showRankUp(newRank);
+      $("rankBadge").classList.add("pulse");
+      setTimeout(() => $("rankBadge").classList.remove("pulse"), 600);
+    } else {
+      updateRankDisplay(newRank, state.xp);
+    }
+
+    setTimeout(() => {
+      if (state.currentLevel >= TOTAL_Q) {
+        winGame();
+      } else {
+        state.currentLevel++;
+        setTimeout(loadQuestion, 400);
+      }
+    }, 1600);
+  } else {
+    btn.classList.add("wrong");
+    allOptions[q.a].classList.add("correct");
+    sfx.wrong();
+    state.wrongCount++;
+    state.streak = 0;
+    setTimeout(() => gameOver("wrong"), 2200);
+  }
+
+  state.pendingAnswer = null;
+}
+
+function cancelAnswer() {
+  $("finalAnswerModal").classList.remove("show");
+  state.pendingAnswer = null;
+}
+
+function handleTimeout() {
+  if (state.answered) return;
+  state.answered = true;
+
+  const q = QUESTIONS[state.currentLevel - 1];
+  const allOptions = document.querySelectorAll(".option");
+  allOptions.forEach(b => b.disabled = true);
+  allOptions[q.a].classList.add("correct");
+
+  state.categoryStats[q.ch].total++;
+  state.wrongCount++;
+  state.streak = 0;
+
+  sfx.wrong();
+  setTimeout(() => gameOver("timeout"), 2200);
+}
+
+function showXpFloat(text) {
+  const box = $("questionBox");
+  const el = document.createElement("div");
+  el.className = "xp-float";
+  el.textContent = text;
+  box.appendChild(el);
+  setTimeout(() => el.remove(), 1300);
+}
+
+function showRankUp(rank) {
+  const toast = $("rankUpToast");
+  $("toastValue").textContent = rank.emoji + " " + rank.name;
+  toast.style.background = `linear-gradient(135deg, ${rank.color}, ${rank.color}dd)`;
+  toast.classList.add("show");
+  sfx.rankup();
+  setTimeout(() => toast.classList.remove("show"), 2800);
+}
+
+/* ============================================================
+   END GAME
+   ============================================================ */
+function gameOver(reason) {
+  clearTimer();
+  state.endTime = Date.now();
+
+  const accuracy = state.currentLevel > 1
+    ? Math.round((state.correctCount / (state.currentLevel - 1)) * 100)
+    : 0;
+
+  const rank = getRank(state.xp);
+  const grade = getGrade(accuracy);
+
+  $("resultRankEmoji").textContent = rank.emoji;
+  $("resultRankName").textContent = rank.name;
+  $("resultTitle").textContent = reason === "timeout" ? "Time's Up!" : "Good Try!";
+  $("resultSub").textContent = reason === "timeout"
+    ? "Time ran out on Level " + state.currentLevel
+    : "Incorrect answer on Level " + state.currentLevel;
+
+  $("rXp").textContent = state.xp;
+  $("rLevel").textContent = (state.currentLevel - 1) + "/" + TOTAL_Q;
+  $("rAccuracy").textContent = accuracy + "%";
+  $("rGrade").textContent = grade.grade;
+
+  renderBreakdown();
+  saveResult({
+    name: state.playerName, class: state.playerClass, school: state.playerSchool,
+    xp: state.xp, level: state.currentLevel, correct: state.correctCount,
+    wrong: state.wrongCount, accuracy: accuracy, grade: grade.grade,
+    rank: rank.name, date: new Date().toISOString(), reason: reason
+  });
+
+  if (accuracy >= 90) launchConfetti();
+  showScreen("resultScreen");
+}
+
+function winGame() {
+  clearTimer();
+  state.endTime = Date.now();
+  const accuracy = Math.round((state.correctCount / TOTAL_Q) * 100);
+  const rank = getRank(state.xp);
+  const grade = getGrade(accuracy);
+
+  $("resultRankEmoji").textContent = rank.emoji;
+  $("resultRankName").textContent = rank.name;
+  $("resultTitle").textContent = "PERFECT! 🏆";
+  $("resultSub").textContent = "You answered all 40 questions correctly!";
+  $("rXp").textContent = state.xp;
+  $("rLevel").textContent = TOTAL_Q + "/" + TOTAL_Q;
+  $("rAccuracy").textContent = accuracy + "%";
+  $("rGrade").textContent = grade.grade;
+
+  renderBreakdown();
+  saveResult({
+    name: state.playerName, class: state.playerClass, school: state.playerSchool,
+    xp: state.xp, level: TOTAL_Q, correct: state.correctCount,
+    wrong: state.wrongCount, accuracy: accuracy, grade: grade.grade,
+    rank: rank.name, date: new Date().toISOString(), reason: "perfect"
+  });
+
+  sfx.finish();
+  launchConfetti();
+  showScreen("resultScreen");
+}
+
+function renderBreakdown() {
+  const container = $("breakdownRows");
+  container.innerHTML = "";
+  Object.entries(state.categoryStats).forEach(([cat, s]) => {
+    const pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
+    const row = document.createElement("div");
+    row.className = "breakdown-row";
+    row.innerHTML = `
+      <span class="breakdown-label">${cat}</span>
+      <span class="breakdown-score">${s.correct}/${s.total}</span>
+      <span class="breakdown-pct">${pct}%</span>
+    `;
+    container.appendChild(row);
+  });
+}
+
+/* ============================================================
+   WALK AWAY
+   ============================================================ */
+function confirmWalkAway() {
+  $("walkAwayMessage").innerHTML = `You will keep <strong>${formatXp(state.xp)}</strong> and end the quiz.`;
+  $("walkAwayModal").classList.add("show");
+}
+
+function closeWalkAwayModal() { $("walkAwayModal").classList.remove("show"); }
+
+function confirmWalkAwayYes() {
+  $("walkAwayModal").classList.remove("show");
+  clearTimer();
+  state.endTime = Date.now();
+
+  const accuracy = state.currentLevel > 1
+    ? Math.round((state.correctCount / (state.currentLevel - 1)) * 100) : 0;
+  const rank = getRank(state.xp);
+  const grade = getGrade(accuracy);
+
+  $("resultRankEmoji").textContent = rank.emoji;
+  $("resultRankName").textContent = rank.name;
+  $("resultTitle").textContent = "Walked Away Wisely";
+  $("resultSub").textContent = "You stopped at Level " + state.currentLevel;
+  $("rXp").textContent = state.xp;
+  $("rLevel").textContent = (state.currentLevel - 1) + "/" + TOTAL_Q;
+  $("rAccuracy").textContent = accuracy + "%";
+  $("rGrade").textContent = grade.grade;
+
+  renderBreakdown();
+  saveResult({
+    name: state.playerName, class: state.playerClass, school: state.playerSchool,
+    xp: state.xp, level: state.currentLevel, correct: state.correctCount,
+    wrong: state.wrongCount, accuracy: accuracy, grade: grade.grade,
+    rank: rank.name, date: new Date().toISOString(), reason: "walkaway"
+  });
+
+  showScreen("resultScreen");
+}
+
+/* ============================================================
+   LIFELINES
+   ============================================================ */
+function updateLifelinesUI() {
+  $("ll5050").disabled = !state.lifelines.fifty;
+  $("llAudience").disabled = !state.lifelines.audience;
+  $("llPhone").disabled = !state.lifelines.phone;
+}
+
+function useLifeline(type) {
+  if (state.answered) return;
+  const q = QUESTIONS[state.currentLevel - 1];
+
+  if (type === "fifty" && state.lifelines.fifty) {
+    state.lifelines.fifty = false;
+    updateLifelinesUI();
+    sfx.lifeline();
+    const wrongIdxs = [0, 1, 2, 3].filter(i => i !== q.a);
+    wrongIdxs.sort(() => Math.random() - 0.5);
+    const toHide = wrongIdxs.slice(0, 2);
+    const buttons = document.querySelectorAll(".option");
+    toHide.forEach(i => {
+      buttons[i].classList.add("dimmed");
+      buttons[i].disabled = true;
+    });
+  }
+  else if (type === "audience" && state.lifelines.audience) {
+    state.lifelines.audience = false;
+    updateLifelinesUI();
+    sfx.lifeline();
+    const correctPct = 55 + Math.floor(Math.random() * 25);
+    let remaining = 100 - correctPct;
+    const others = [0, 1, 2, 3].filter(i => i !== q.a);
+    const otherPcts = [];
+    others.forEach((_, i) => {
+      if (i === others.length - 1) otherPcts.push(remaining);
+      else {
+        const v = Math.floor(Math.random() * (remaining - (others.length - i - 1)));
+        otherPcts.push(v);
+        remaining -= v;
+      }
+    });
+    const pcts = [0, 0, 0, 0];
+    pcts[q.a] = correctPct;
+    others.forEach((idx, i) => pcts[idx] = otherPcts[i]);
+    const chart = $("audienceChart");
+    chart.innerHTML = "";
+    pcts.forEach((p, i) => {
+      const bar = document.createElement("div");
+      bar.className = "audience-bar";
+      bar.innerHTML = `
+        <div class="audience-bar-pct">${p}%</div>
+        <div class="audience-bar-fill" style="height: ${Math.max(8, p * 1.4)}px;"></div>
+        <div class="audience-bar-label">${LETTERS[i]}</div>
+      `;
+      chart.appendChild(bar);
+    });
+    $("audienceModal").classList.add("show");
+  }
+  else if (type === "phone" && state.lifelines.phone) {
+    state.lifelines.phone = false;
+    updateLifelinesUI();
+    sfx.lifeline();
+    const isCorrectHint = Math.random() < 0.7;
+    let hintIdx;
+    if (isCorrectHint) hintIdx = q.a;
+    else {
+      const wrongIdxs = [0, 1, 2, 3].filter(i => i !== q.a);
+      hintIdx = wrongIdxs[Math.floor(Math.random() * wrongIdxs.length)];
+    }
+    const msgs = [
+      `Hi! I think the answer is <strong>${LETTERS[hintIdx]}. ${q.o[hintIdx]}</strong>.`,
+      `Hey! I'm pretty sure it's <strong>${LETTERS[hintIdx]}. ${q.o[hintIdx]}</strong>.`,
+      `I'm confident the answer is <strong>${LETTERS[hintIdx]}. ${q.o[hintIdx]}</strong>!`
+    ];
+    $("phoneMessage").innerHTML = msgs[Math.floor(Math.random() * msgs.length)];
+    $("phoneModal").classList.add("show");
+  }
+}
+
+function closeAudienceModal() { $("audienceModal").classList.remove("show"); }
+function closePhoneModal() { $("phoneModal").classList.remove("show"); }
+
+/* ============================================================
+   LADDER
+   ============================================================ */
+function renderLadder() {
+  const container = $("ladderContainer");
+  container.innerHTML = "";
+  const milestones = [10, 20, 30];
+
+  for (let i = TOTAL_Q; i >= 1; i--) {
+    const row = document.createElement("div");
+    row.className = "ladder-row";
+    const isMilestone = milestones.includes(i);
+    const isFinal = i === TOTAL_Q;
+    if (i === state.currentLevel) row.classList.add("current");
+    else if (i < state.currentLevel) row.classList.add("passed");
+    if (isMilestone) row.classList.add("milestone");
+    let icon = "";
+    if (isFinal) icon = "🏆";
+    else if (isMilestone) icon = "⭐";
+    else if (i < state.currentLevel) icon = "✓";
+    row.innerHTML = `
+      <span class="level">${i}</span>
+      <span class="prize">${formatXp(i * XP_PER_CORRECT)}</span>
+      <span class="icon">${icon}</span>
+    `;
+    container.appendChild(row);
+  }
+  const cur = container.querySelector(".ladder-row.current");
+  if (cur) cur.scrollIntoView({ block: "center", behavior: "smooth" });
+}
+
+/* ============================================================
+   STORAGE
+   ============================================================ */
+function saveResult(result) {
+  try {
+    const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    all.push(result);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+  } catch (e) { console.warn("Save failed:", e); }
+}
+
+/* ============================================================
+   PRINT REPORT
+   ============================================================ */
+function populatePrintReport() {
+  const attempted = state.correctCount + state.wrongCount;
+  const accuracy = attempted > 0 ? Math.round((state.correctCount / attempted) * 100) : 0;
+  const rank = getRank(state.xp);
+  const grade = getGrade(accuracy);
+  const duration = Math.round((state.endTime - state.startTime) / 1000);
+  const mins = Math.floor(duration / 60);
+  const secs = duration % 60;
+
+  $("printSchool").textContent = state.playerSchool;
+  $("printName").textContent = state.playerName;
+  $("printClass").textContent = state.playerClass;
+  $("printDate").textContent = new Date().toLocaleDateString("id-ID", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric"
+  });
+  $("printDuration").textContent = `${mins} minutes ${secs} seconds`;
+
+  $("printXp").textContent = state.xp;
+  $("printRank").textContent = rank.emoji + " " + rank.name;
+  $("printAccuracy").textContent = accuracy + "%";
+  $("printGrade").textContent = grade.grade + " (" + grade.desc + ")";
+  $("printLevel").textContent = attempted + " / " + TOTAL_Q;
+  $("printCorrect").textContent = state.correctCount;
+  $("printWrong").textContent = state.wrongCount;
+
+  const bd = $("printBreakdown");
+  bd.innerHTML = "";
+  Object.entries(state.categoryStats).forEach(([cat, s]) => {
+    const pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${cat}</td><td>${s.correct}</td><td>${s.total}</td><td>${pct}%</td>`;
+    bd.appendChild(tr);
+  });
+
+  const strongCats = Object.entries(state.categoryStats)
+    .filter(([cat, s]) => s.total > 0 && (s.correct / s.total) >= 0.9)
+    .map(([cat]) => cat);
+  const weakCats = Object.entries(state.categoryStats)
+    .filter(([cat, s]) => s.total > 0 && (s.correct / s.total) < 0.7)
+    .map(([cat]) => cat);
+
+  let notesHTML = "";
+  if (accuracy >= 90) {
+    notesHTML += `<p><strong>Excellent performance!</strong> ${state.playerName} demonstrated strong critical thinking across almost all categories, achieving the <strong>${rank.name}</strong> rank with ${grade.desc.toLowerCase()} performance.</p>`;
+  } else if (accuracy >= 75) {
+    notesHTML += `<p><strong>Good performance.</strong> ${state.playerName} shows solid understanding of Pancasila and civic concepts. Continued practice will further strengthen analysis and reasoning skills.</p>`;
+  } else if (accuracy >= 60) {
+    notesHTML += `<p><strong>Fair performance.</strong> ${state.playerName} demonstrates basic understanding but needs additional practice in applying Pancasila values and norms in daily life.</p>`;
+  } else {
+    notesHTML += `<p><strong>Needs improvement.</strong> ${state.playerName} is encouraged to review Pancasila principles, civic rights, and conflict resolution. Consistent practice with everyday situations is recommended.</p>`;
+  }
+  if (strongCats.length > 0) notesHTML += `<p><strong>Strengths:</strong> ${strongCats.join(", ")}.</p>`;
+  if (weakCats.length > 0) notesHTML += `<p><strong>Areas for improvement:</strong> ${weakCats.join(", ")}. Focus practice on these categories.</p>`;
+
+  $("printNotes").innerHTML = notesHTML;
+  $("printFooterDate").textContent = new Date().toLocaleString("id-ID");
+}
+
+$("printBtn").addEventListener("click", () => {
+  populatePrintReport();
+  setTimeout(() => window.print(), 100);
+});
+
+/* ============================================================
+   WIRING
+   ============================================================ */
+$("playAgainBtn").addEventListener("click", () => { sfx.click(); startGame(); });
+
+$("exitBtn").addEventListener("click", () => {
+  sfx.click();
+  $("nameInput").value = "";
+  $("classInput").value = "";
+  $("schoolInput").value = "";
+  state.playerName = "";
+  state.playerClass = "";
+  state.playerSchool = "";
+  showScreen("setupScreen");
+});
+
+/* ============================================================
+   CONFETTI
+   ============================================================ */
+function launchConfetti() {
+  const canvas = $("confetti");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ["#fbbf24", "#fde047", "#a855f7", "#ec4899", "#22c55e", "#3b82f6"];
+  const parts = [];
+  for (let i = 0; i < 150; i++) {
+    parts.push({
+      x: Math.random() * canvas.width,
+      y: -20 - Math.random() * 400,
+      vx: (Math.random() - 0.5) * 4,
+      vy: Math.random() * 3 + 2,
+      size: Math.random() * 8 + 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * Math.PI,
+      vrot: (Math.random() - 0.5) * 0.3
+    });
+  }
+  let frames = 0;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    parts.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.08; p.rot += p.vrot;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+      ctx.restore();
+    });
+    frames++;
+    if (frames < 300) requestAnimationFrame(animate);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  animate();
+}
+
+window.addEventListener("load", () => { renderLadder(); });
+</script>
+</body>
+</html>
